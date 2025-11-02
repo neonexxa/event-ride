@@ -1,0 +1,19 @@
+# Carpool System Project Rules
+
+## Seeding Script
+- All seed data files in `dummy-data/` must follow pattern: `{number}_{collection}.json`
+- Files are processed in numerical order
+- Do NOT modify `seed-firestore.js` when adding new collections
+- Just add new JSON files with proper naming
+
+## Firestore Collections
+- Events: Uses custom document IDs (from 'id' field in data)
+- Cars: Uses auto-generated IDs
+- Always include event_id in cars to reference events
+
+## File Structure
+- React app files: `/src`
+- Seed data: `/dummy-data`
+- Deployment config: `/app.yaml`
+- Service account key: `/SA.json` (gitignored)
+

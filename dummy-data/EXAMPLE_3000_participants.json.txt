@@ -1,0 +1,21 @@
+// Example file for future use
+// To use this, rename it to: 3000_participants.json
+// Then run: npm run seed
+
+[
+  {
+    "car_id": "your-car-document-id",
+    "seat_number": 1,
+    "passenger_name": "Jane Smith",
+    "passenger_email": "jane.smith@airasia.com",
+    "pickup_point": "RedQ Main Lobby"
+  },
+  {
+    "car_id": "your-car-document-id",
+    "seat_number": 2,
+    "passenger_name": "John Doe",
+    "passenger_email": "john.doe@airasia.com",
+    "pickup_point": "KL Sentral"
+  }
+]
+
