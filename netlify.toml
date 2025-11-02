@@ -6,8 +6,8 @@
   publish = "build"
 
 [build.environment]
-  # Node version
-  NODE_VERSION = "18"
+  # Node version (Firebase requires 20+)
+  NODE_VERSION = "22"
 
 # Redirect all requests to index.html for SPA routing
 [[redirects]]

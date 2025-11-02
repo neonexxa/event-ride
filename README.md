@@ -13,8 +13,8 @@ A simple React-based carpool seat selection system for events, integrated with G
 
 ## Prerequisites
 
-- Node.js (v16 or higher)
-- Google Cloud SDK (`gcloud` CLI)
+- Node.js (v22 or higher) - Required by Firebase
+- Google Cloud SDK (`gcloud` CLI) - Optional, for App Engine deployment
 - Firebase project setup
 
 ## Setup Instructions

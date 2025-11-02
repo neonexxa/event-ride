@@ -25,7 +25,7 @@ Netlify should auto-detect the settings from `netlify.toml`, but verify:
 - **Base directory**: (leave empty)
 - **Build command**: `npm run build`
 - **Publish directory**: `build`
-- **Node version**: 18
+- **Node version**: 22 (required by Firebase)
 
 Click **"Deploy site"**
 
