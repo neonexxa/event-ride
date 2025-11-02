@@ -6,10 +6,10 @@ A simple React-based carpool seat selection system for events, integrated with G
 
 - 🎯 Event selection dropdown
 - 🚗 Visual seat selection interface (similar to movie ticket booking)
-- 📊 Real-time seat availability
+- ⚡ **Real-time seat updates** - See bookings/cancellations instantly across all devices
 - 💺 Book and cancel seats
 - 📱 Responsive design
-- ☁️ Google Cloud Firestore integration
+- ☁️ Google Cloud Firestore integration with live listeners
 
 ## Prerequisites
 
@@ -181,10 +181,13 @@ carpool-to-events/
 
 1. **Event Selection**: Users select an event from the dropdown
 2. **View Cars**: All cars for the selected event are displayed in a grid (max 3 per row)
-3. **Seat Selection**: Click on an available seat to book it
-4. **Booking Form**: Fill in passenger details (name, email, pickup point)
-5. **Confirmation**: Seat is marked as occupied and shows the passenger name
-6. **Cancellation**: Click on an occupied seat to cancel the booking
+3. **Real-Time Updates**: App listens to Firestore changes - all users see updates instantly
+4. **Seat Selection**: Click on an available seat to book it
+5. **Booking Form**: Fill in passenger details (name, email, pickup point)
+6. **Instant Feedback**: Seat is marked as occupied immediately for all users
+7. **Cancellation**: Click on an occupied seat to cancel the booking
+
+**✨ Real-Time Magic**: When someone books a seat, everyone viewing that event sees it update **instantly** without refreshing! See [REALTIME_FEATURES.md](REALTIME_FEATURES.md) for technical details.
 
 ## Configuration Files
 

@@ -2,6 +2,38 @@
 
 All notable changes to the Carpool Seat Selection System.
 
+## [2.1.0] - 2024-11-02
+
+### 🔥 Real-Time Features
+
+#### Added
+- **Real-time seat updates** using Firestore `onSnapshot` listeners
+- Instant seat availability across all connected users
+- No manual refresh needed - changes appear automatically
+- Console logging for real-time events (🔄 updates, 🔌 cleanup)
+
+#### Changed
+- Removed manual `fetchParticipants()` calls after booking/cancellation
+- Participants now update automatically via Firestore listeners
+- Better UX with immediate feedback for all users
+
+#### Technical
+- Added `onSnapshot` import from Firestore
+- Implemented `subscribeToParticipants()` with proper cleanup
+- Automatic unsubscribe when switching events or unmounting
+- Efficient client-side filtering for event-specific participants
+
+#### Benefits
+- ✅ Multiple users can view same event simultaneously
+- ✅ Zero race conditions - Firestore handles conflicts
+- ✅ Reduces Firestore reads (no polling)
+- ✅ Better collaborative experience
+
+#### Documentation
+- Added `REALTIME_FEATURES.md` - Complete technical documentation
+- Updated `README.md` with real-time features
+- Added testing scenarios for real-time functionality
+
 ## [2.0.0] - 2024-11-02
 
 ### 🚀 Major Changes - Robust Seeding System

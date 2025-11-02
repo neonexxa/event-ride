@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { collection, getDocs, addDoc, query, where, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, where, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import './App.css';
 
 function App() {
@@ -17,16 +17,35 @@ function App() {
   });
   const [loading, setLoading] = useState(false);
 
-  // Fetch all events (unique event_ids from cars)
+  // Fetch all events (one-time fetch, events don't change often)
   useEffect(() => {
     fetchEvents();
   }, []);
 
-  // Fetch cars when event is selected
+  // Setup real-time listeners when event is selected
   useEffect(() => {
+    let unsubscribe = null;
+    
     if (selectedEvent) {
+      // Fetch cars (one-time, cars don't change during event)
       fetchCars(selectedEvent);
-      fetchParticipants(selectedEvent);
+      
+      // Setup real-time listener for participants
+      subscribeToParticipants(selectedEvent).then(unsub => {
+        unsubscribe = unsub;
+      });
+      
+      // Cleanup listener on unmount or event change
+      return () => {
+        if (unsubscribe) {
+          console.log('🔌 Unsubscribing from participants listener');
+          unsubscribe();
+        }
+      };
+    } else {
+      // Clear data when no event selected
+      setCars([]);
+      setParticipants([]);
     }
   }, [selectedEvent]);
 
@@ -61,24 +80,40 @@ function App() {
     }
   };
 
-  const fetchParticipants = async (eventId) => {
+  // Real-time listener for participants
+  const subscribeToParticipants = async (eventId) => {
     try {
-      const carsSnapshot = await getDocs(
-        query(collection(db, 'cars'), where('event_id', '==', eventId))
-      );
+      // First get all car IDs for this event
+      const carsQuery = query(collection(db, 'cars'), where('event_id', '==', eventId));
+      const carsSnapshot = await getDocs(carsQuery);
       const carIds = carsSnapshot.docs.map(doc => doc.id);
       
-      const participantsSnapshot = await getDocs(collection(db, 'participants'));
-      const participantsData = participantsSnapshot.docs
-        .filter(doc => carIds.includes(doc.data().car_id))
-        .map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+      if (carIds.length === 0) {
+        setParticipants([]);
+        return () => {}; // Return empty cleanup function
+      }
       
-      setParticipants(participantsData);
+      // Listen to ALL participants changes in real-time
+      const participantsQuery = collection(db, 'participants');
+      const unsubscribe = onSnapshot(participantsQuery, (snapshot) => {
+        const participantsData = snapshot.docs
+          .filter(doc => carIds.includes(doc.data().car_id))
+          .map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+        
+        setParticipants(participantsData);
+        console.log('🔄 Real-time update: Participants refreshed');
+      }, (error) => {
+        console.error('Error in participants listener:', error);
+      });
+      
+      // Return the unsubscribe function for cleanup
+      return unsubscribe;
     } catch (error) {
-      console.error('Error fetching participants:', error);
+      console.error('Error setting up participants listener:', error);
+      return () => {}; // Return empty cleanup function on error
     }
   };
 
@@ -105,7 +140,7 @@ function App() {
   const cancelBooking = async (participantId) => {
     try {
       await deleteDoc(doc(db, 'participants', participantId));
-      fetchParticipants(selectedEvent);
+      // Real-time listener will automatically update the UI
       alert('Booking cancelled successfully!');
     } catch (error) {
       console.error('Error cancelling booking:', error);
@@ -133,7 +168,7 @@ function App() {
       setShowModal(false);
       setFormData({ passenger_name: '', passenger_email: '', pickup_point: '' });
       setSelectedSeat(null);
-      fetchParticipants(selectedEvent);
+      // Real-time listener will automatically update the UI
       alert('Seat booked successfully!');
     } catch (error) {
       console.error('Error booking seat:', error);
