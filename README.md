@@ -5,6 +5,7 @@ A simple React-based carpool seat selection system for events, integrated with G
 ## Features
 
 - 🎯 Event selection dropdown
+- 🔗 **URL routing** - Shareable event links (e.g., `/airasia-annual-dinner-2025`)
 - 🚗 Visual seat selection interface (similar to movie ticket booking)
 - ⚡ **Real-time seat updates** - See bookings/cancellations instantly across all devices
 - 💺 Book and cancel seats
@@ -180,17 +181,62 @@ carpool-to-events/
 └── README.md
 ```
 
+## Visual Layout
+
+The seat selection interface uses a movie-ticket-style layout with **2 seats per row**:
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  🎯 Event: AirAsia Annual Dinner 2025                        │
+└──────────────────────────────────────────────────────────────┘
+
+┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐
+│ 🚙 Ahmad Ibrahim   │  │ 🚙 Sarah Tan       │  │ 🚙 Kumar Raj       │
+│ ⏰ 6:00 PM         │  │ ⏰ 6:15 PM         │  │ ⏰ 6:00 PM         │
+│ 📍 RedQ Main Lobby │  │ 📍 Parking Lot A   │  │ 📍 RedQ Main Lobby │
+│                    │  │                    │  │                    │
+│  ┌──────┬──────┐   │  │  ┌──────┬──────┐   │  │  ┌──────┬──────┐   │
+│  │  1   │  2   │   │  │  │  1   │  2   │   │  │  │  1   │  2   │   │
+│  │ John │      │   │  │  │      │ Mary │   │  │  │ Alex │ Sara │   │
+│  └──────┴──────┘   │  │  └──────┴──────┘   │  │  └──────┴──────┘   │
+│  ┌──────┬──────┐   │  │  ┌──────┐          │  │  ┌──────┬──────┐   │
+│  │  3   │  4   │   │  │  │  3   │          │  │  │  3   │  4   │   │
+│  │ Lisa │      │   │  │  │      │          │  │  │      │ Mike │   │
+│  └──────┴──────┘   │  │  └──────┘          │  │  └──────┴──────┘   │
+│                    │  │                    │  │  ┌──────┐          │
+└────────────────────┘  └────────────────────┘  │  │  5   │          │
+                                                │  │ Kate │          │
+                                                │  └──────┘          │
+                                                └────────────────────┘
+
+  🟢 Available    🔴 Occupied
+```
+
+**Features**:
+- Max 3 cars per row on desktop
+- 2 seats per row within each car
+- Color-coded availability
+- Hover to see passenger names
+- Click to book/cancel
+
 ## How It Works
 
-1. **Event Selection**: Users select an event from the dropdown
-2. **View Cars**: All cars for the selected event are displayed in a grid (max 3 per row)
-3. **Real-Time Updates**: App listens to Firestore changes - all users see updates instantly
-4. **Seat Selection**: Click on an available seat to book it
-5. **Booking Form**: Fill in passenger details (name, email, pickup point)
-6. **Instant Feedback**: Seat is marked as occupied immediately for all users
-7. **Cancellation**: Click on an occupied seat to cancel the booking
+1. **Event Selection**: Users select an event from the dropdown (or browse directly to event URL)
+2. **URL Updates**: URL changes to `/{event-id}` - shareable and bookmarkable! 🔗
+3. **View Cars**: All cars for the selected event are displayed in a grid (max 3 per row)
+4. **Real-Time Updates**: App listens to Firestore changes - all users see updates instantly
+5. **Seat Selection**: Click on an available seat to book it (2 seats per row layout)
+6. **Booking Form**: Fill in passenger details (name, email, pickup point)
+7. **Instant Feedback**: Seat is marked as occupied immediately for all users
+8. **Cancellation**: Click on an occupied seat to cancel the booking
+9. **Smart Booking**: If you book with same email, your previous booking moves to the new seat
 
 **✨ Real-Time Magic**: When someone books a seat, everyone viewing that event sees it update **instantly** without refreshing! See [REALTIME_FEATURES.md](REALTIME_FEATURES.md) for technical details.
+
+**🔗 Shareable URLs**: 
+- Home: `https://yoursite.com/`
+- Specific event: `https://yoursite.com/airasia-annual-dinner-2025`
+- Share event links directly with colleagues!
 
 ## Configuration Files
 

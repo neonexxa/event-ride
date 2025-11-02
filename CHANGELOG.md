@@ -14,6 +14,10 @@ All notable changes to the Carpool Seat Selection System.
 - **Smart booking logic**: One email = One booking per event
 - **Automatic seat moving**: If user books again, they're moved to new seat (with confirmation)
 - `event_id` field in participants collection for better data organization
+- **URL routing** with React Router - Event IDs in URL (e.g., `/airasia-annual-dinner-2025`)
+- Direct navigation to specific events via URL
+- Loading states for events dropdown
+- Shareable event links
 
 #### Changed
 - Removed manual `fetchParticipants()` calls after booking/cancellation

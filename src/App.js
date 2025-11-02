@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { db } from './firebase';
 import { collection, getDocs, addDoc, query, where, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import './App.css';
 
 function App() {
+  const { eventId } = useParams(); // Get event ID from URL
+  const navigate = useNavigate(); // For programmatic navigation
+  
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState('');
   const [cars, setCars] = useState([]);
@@ -16,6 +20,7 @@ function App() {
     pickup_point: ''
   });
   const [loading, setLoading] = useState(false);
+  const [eventsLoading, setEventsLoading] = useState(true);
 
   // Fetch all events (one-time fetch, events don't change often)
   useEffect(() => {
@@ -27,6 +32,11 @@ function App() {
     let unsubscribe = null;
     
     if (selectedEvent) {
+      // Update URL when event is selected
+      if (selectedEvent !== eventId) {
+        navigate(`/${selectedEvent}`, { replace: false });
+      }
+      
       // Fetch cars (one-time, cars don't change during event)
       fetchCars(selectedEvent);
       
@@ -46,22 +56,45 @@ function App() {
       // Clear data when no event selected
       setCars([]);
       setParticipants([]);
+      
+      // Update URL to home when no event selected
+      if (eventId) {
+        navigate('/', { replace: false });
+      }
     }
-  }, [selectedEvent]);
+  }, [selectedEvent, navigate, eventId]);
 
   const fetchEvents = async () => {
     try {
+      setEventsLoading(true);
       const eventsSnapshot = await getDocs(collection(db, 'events'));
       const eventsData = eventsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
       setEvents(eventsData);
+      setEventsLoading(false);
     } catch (error) {
       console.error('Error fetching events:', error);
+      setEventsLoading(false);
       alert('Error loading events. Please check your Firebase configuration.');
     }
   };
+
+  // Set selected event from URL when events are loaded
+  useEffect(() => {
+    if (eventId && events.length > 0 && !selectedEvent) {
+      // Check if the event from URL exists
+      const eventExists = events.find(e => e.id === eventId);
+      if (eventExists) {
+        setSelectedEvent(eventId);
+      } else {
+        // Event doesn't exist, redirect to home
+        console.warn(`Event ${eventId} not found, redirecting to home`);
+        navigate('/');
+      }
+    }
+  }, [eventId, events, selectedEvent, navigate]);
 
   const fetchCars = async (eventId) => {
     try {
@@ -233,19 +266,23 @@ function App() {
         
         <div className="event-selector">
           <label htmlFor="event-select">Select Event:</label>
-          <select
-            id="event-select"
-            value={selectedEvent}
-            onChange={(e) => setSelectedEvent(e.target.value)}
-            className="event-dropdown"
-          >
-            <option value="">-- Select an Event --</option>
-            {events.map((event) => (
-              <option key={event.id} value={event.id}>
-                {event.name} - {event.date} ({event.startTime} - {event.endTime})
-              </option>
-            ))}
-          </select>
+          {eventsLoading ? (
+            <div className="loading-inline">Loading events...</div>
+          ) : (
+            <select
+              id="event-select"
+              value={selectedEvent}
+              onChange={(e) => setSelectedEvent(e.target.value)}
+              className="event-dropdown"
+            >
+              <option value="">-- Select an Event --</option>
+              {events.map((event) => (
+                <option key={event.id} value={event.id}>
+                  {event.name} - {event.date} ({event.startTime} - {event.endTime})
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {loading && <div className="loading">Loading cars...</div>}
@@ -260,8 +297,8 @@ function App() {
                   <div className="car-header">
                     <h3>🚙 {car.driver_name}</h3>
                     <div className="car-info">
-                      <p>⏰ {car.depart_time}</p>
-                      <p>📍 {car.meetup_point}</p>
+                      <p>⏰ Depart At: {car.depart_time}</p>
+                      <p>📍 Collection Point: {car.meetup_point}</p>
                     </div>
                   </div>
                   <div className="seats-container">
