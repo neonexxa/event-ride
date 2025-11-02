@@ -2,16 +2,16 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 // Firebase configuration
-// Replace these values with your actual Firebase config
+// For production, these should be set as environment variables in Netlify
 const firebaseConfig = {
-    apiKey: "AIzaSyDp2cj2WgrInNEnCdqknzEkG_En6xVyTUQ",
-    authDomain: "awesomeproject-cd995.firebaseapp.com",
-    databaseURL: "https://awesomeproject-cd995-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "awesomeproject-cd995",
-    storageBucket: "awesomeproject-cd995.firebasestorage.app",
-    messagingSenderId: "103763816586",
-    appId: "1:103763816586:web:0ac98718fff8a6ab247d73",
-    measurementId: "G-XFLGWLHCZS"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase

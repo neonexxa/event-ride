@@ -122,38 +122,43 @@ npm run build
 
 This creates a `build` directory with optimized production files.
 
-## Deployment to Google App Engine
+## Deployment
 
-### 1. Authenticate with Google Cloud
+### Option 1: Netlify (Recommended - Easiest)
 
-```bash
-gcloud auth login
-gcloud config set project carpool-system-12321321
-```
+1. **Push code to GitHub**
+2. **Connect to Netlify**:
+   - Go to [Netlify](https://app.netlify.com/)
+   - Click "Add new site" → "Import from Git"
+   - Select your repository
+   - Deploy! (auto-detected from `netlify.toml`)
 
-### 2. Build the app
+For detailed instructions, see [NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md)
 
-```bash
-npm run build
-```
+**Benefits**:
+- ✅ Automatic deployments on Git push
+- ✅ Free SSL certificate
+- ✅ Global CDN
+- ✅ Preview deployments for PRs
 
-### 3. Deploy to App Engine
+### Option 2: Google App Engine
 
-```bash
-gcloud app deploy
-```
+1. **Authenticate with Google Cloud**
+   ```bash
+   gcloud auth login
+   gcloud config set project carpool-system-12321321
+   ```
 
-Or use the npm script:
+2. **Build and deploy**
+   ```bash
+   npm run build
+   gcloud app deploy
+   ```
 
-```bash
-npm run deploy
-```
-
-### 4. View your app
-
-```bash
-gcloud app browse
-```
+3. **View your app**
+   ```bash
+   gcloud app browse
+   ```
 
 ## Project Structure
 
@@ -183,8 +188,10 @@ carpool-to-events/
 
 ## Configuration Files
 
-- **app.yaml**: Google App Engine configuration for serving the React build
-- **.gcloudignore**: Specifies files to exclude from deployment
+- **netlify.toml**: Netlify deployment configuration (build settings, redirects, headers)
+- **public/_redirects**: SPA routing configuration for Netlify
+- **app.yaml**: Google App Engine configuration (alternative deployment)
+- **.gcloudignore**: Specifies files to exclude from App Engine deployment
 - **package.json**: Node.js dependencies and scripts
 
 ## Firestore Security Rules (Recommended)
