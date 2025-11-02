@@ -157,19 +157,65 @@ function App() {
     }
 
     try {
-      await addDoc(collection(db, 'participants'), {
-        car_id: selectedSeat.carId,
-        seat_number: selectedSeat.seatNumber,
-        passenger_name: formData.passenger_name,
-        passenger_email: formData.passenger_email,
-        pickup_point: formData.pickup_point
-      });
+      // Check if user already has a booking for this event
+      const existingBookingQuery = query(
+        collection(db, 'participants'),
+        where('event_id', '==', selectedEvent),
+        where('passenger_email', '==', formData.passenger_email)
+      );
+      
+      const existingBookings = await getDocs(existingBookingQuery);
+      
+      if (!existingBookings.empty) {
+        // User already has a booking - move them to the new seat
+        const existingDoc = existingBookings.docs[0];
+        const existingData = existingDoc.data();
+        
+        // Get old seat info for confirmation message
+        const oldCar = cars.find(c => c.id === existingData.car_id);
+        const oldSeatNumber = existingData.seat_number;
+        
+        const confirmMove = window.confirm(
+          `You already have a booking for this event (${oldCar?.driver_name || 'Unknown'} - Seat ${oldSeatNumber}).\n\nDo you want to move to the new seat?`
+        );
+        
+        if (!confirmMove) {
+          setShowModal(false);
+          return;
+        }
+        
+        // Update existing booking with new seat info
+        await deleteDoc(doc(db, 'participants', existingDoc.id));
+        await addDoc(collection(db, 'participants'), {
+          event_id: selectedEvent,
+          car_id: selectedSeat.carId,
+          seat_number: selectedSeat.seatNumber,
+          passenger_name: formData.passenger_name,
+          passenger_email: formData.passenger_email,
+          pickup_point: formData.pickup_point
+        });
+        
+        setShowModal(false);
+        setFormData({ passenger_name: '', passenger_email: '', pickup_point: '' });
+        setSelectedSeat(null);
+        alert('Booking moved to new seat successfully!');
+      } else {
+        // New booking - create new participant
+        await addDoc(collection(db, 'participants'), {
+          event_id: selectedEvent,
+          car_id: selectedSeat.carId,
+          seat_number: selectedSeat.seatNumber,
+          passenger_name: formData.passenger_name,
+          passenger_email: formData.passenger_email,
+          pickup_point: formData.pickup_point
+        });
 
-      setShowModal(false);
-      setFormData({ passenger_name: '', passenger_email: '', pickup_point: '' });
-      setSelectedSeat(null);
-      // Real-time listener will automatically update the UI
-      alert('Seat booked successfully!');
+        setShowModal(false);
+        setFormData({ passenger_name: '', passenger_email: '', pickup_point: '' });
+        setSelectedSeat(null);
+        // Real-time listener will automatically update the UI
+        alert('Seat booked successfully!');
+      }
     } catch (error) {
       console.error('Error booking seat:', error);
       alert('Error booking seat. Please try again.');

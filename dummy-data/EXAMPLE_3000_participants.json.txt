@@ -4,6 +4,7 @@
 
 [
   {
+    "event_id": "airasia-annual-dinner-2025",
     "car_id": "your-car-document-id",
     "seat_number": 1,
     "passenger_name": "Jane Smith",
@@ -11,6 +12,7 @@
     "pickup_point": "RedQ Main Lobby"
   },
   {
+    "event_id": "airasia-annual-dinner-2025",
     "car_id": "your-car-document-id",
     "seat_number": 2,
     "passenger_name": "John Doe",

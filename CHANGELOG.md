@@ -4,13 +4,16 @@ All notable changes to the Carpool Seat Selection System.
 
 ## [2.1.0] - 2024-11-02
 
-### 🔥 Real-Time Features
+### 🔥 Real-Time Features & Smart Booking
 
 #### Added
 - **Real-time seat updates** using Firestore `onSnapshot` listeners
 - Instant seat availability across all connected users
 - No manual refresh needed - changes appear automatically
 - Console logging for real-time events (🔄 updates, 🔌 cleanup)
+- **Smart booking logic**: One email = One booking per event
+- **Automatic seat moving**: If user books again, they're moved to new seat (with confirmation)
+- `event_id` field in participants collection for better data organization
 
 #### Changed
 - Removed manual `fetchParticipants()` calls after booking/cancellation
@@ -31,8 +34,9 @@ All notable changes to the Carpool Seat Selection System.
 
 #### Documentation
 - Added `REALTIME_FEATURES.md` - Complete technical documentation
-- Updated `README.md` with real-time features
-- Added testing scenarios for real-time functionality
+- Added `BOOKING_LOGIC.md` - Detailed booking flow and business rules
+- Updated `README.md` with real-time features and booking rules
+- Added testing scenarios for real-time functionality and seat moving
 
 ## [2.0.0] - 2024-11-02
 

@@ -92,13 +92,16 @@ For detailed instructions, see [SEEDING.md](SEEDING.md)
 ```
 {
   id: "auto-generated",
-  car_id: "reference-to-car-id",
+  event_id: "airasia-annual-dinner-2025",  // references event document ID
+  car_id: "car-document-id",                // references car document ID
   seat_number: 1,
   passenger_name: "Jane Smith",
   passenger_email: "jane@example.com",
   pickup_point: "Main Street"
 }
 ```
+
+**Note**: Each email can only have one booking per event. If they book another seat, their booking is moved to the new seat.
 
 ### 5. Create Firestore Indexes (if needed)
 
